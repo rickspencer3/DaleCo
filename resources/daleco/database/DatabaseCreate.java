@@ -3,6 +3,7 @@ package daleco.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.sql.Statement;
@@ -61,7 +62,6 @@ public class DatabaseCreate {
 	                batchStatment.addBatch(sql);
 	            } 
 	            
-	            
 	            bufferedReader.close(); //TODO: Move this to a finally block
 	            
 	            batchStatment.executeBatch();
@@ -83,6 +83,28 @@ public class DatabaseCreate {
             }
 		}
 		
+	}
+	
+	public boolean dbExsits(){
+	    try{
+
+	        ResultSet resultSet = connection.getMetaData().getCatalogs();
+
+	        while (resultSet.next()) {
+
+	          String databaseName = resultSet.getString(1);
+	            if(databaseName.equals("inventory")){
+	                return true;
+	            }
+	        }
+	        resultSet.close();
+
+	    }
+	    catch(Exception e){
+	        e.printStackTrace();
+	    }
+
+	    return false;
 	}
 	
 	public void close() {
