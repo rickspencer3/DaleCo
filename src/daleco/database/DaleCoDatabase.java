@@ -10,11 +10,24 @@ import java.sql.Statement;
 
 import java.io.*;
 
-public class DatabaseCreate {
+public class DaleCoDatabase {
 	private Connection connection = null;
 
-	public DatabaseCreate(DatabaseConfig dbconfig) throws Exception {
+	public Connection getConnection() {
+		return this.connection;
+	}
+	
+	public DaleCoDatabase() throws Exception {
 		try {
+			DatabaseConfig dbconfig = null;
+
+			DatabaseGetPropertyValues dbpropvalues = new DatabaseGetPropertyValues();
+	
+			dbconfig =dbpropvalues.getPropValues();
+			System.out.println("User: " + dbconfig.GetUser());
+			System.out.println("Password: " + dbconfig.GetPassword());
+			System.out.println("Host: " + dbconfig.GetHost());
+			
 			System.out.println("Initializing database driver ...");
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting to Database");

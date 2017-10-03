@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import daleco.database.DaleCoDatabase;
 import daleco.database.DatabaseConfig;
 import daleco.database.DatabaseCreate;
 import daleco.database.DatabaseGetPropertyValues;
@@ -32,23 +33,17 @@ public class Initializer extends HttpServlet {
     public void init( ) {
     		System.out.println("First run, checking for database ...");
     		try {
-    			DatabaseConfig dbconfig = null;
-    		
 
-    			DatabaseGetPropertyValues dbpropvalues = new DatabaseGetPropertyValues();
-		
-			dbconfig =dbpropvalues.getPropValues();
-			System.out.println("User: " + dbconfig.GetUser());
-			System.out.println("Password: " + dbconfig.GetPassword());
-			System.out.println("Host: " + dbconfig.GetHost());
 			
-			DatabaseCreate dbcreate = new DatabaseCreate(dbconfig);
-			if(dbcreate.dbExsits()) {
+			DaleCoDatabase db = new DaleCoDatabase();
+			
+			
+			if(db.dbExsits()) {
 				System.out.println("Daleco database exists, continuing with initialization.");
 			}
 			else {
 				System.out.println("Daleco database not found, creating ...");
-				dbcreate.create();
+				db.create();
 			}
 			
 			

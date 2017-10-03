@@ -13,5 +13,5 @@
     <servlet-name>Initializer</servlet-name>
     <servlet-class>daleco.initialization.Initializer</servlet-class>
     <load-on-startup>1</load-on-startup>
-</servlet>
+  </servlet>
 </web-app>
