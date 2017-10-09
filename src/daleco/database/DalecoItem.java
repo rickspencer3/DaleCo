@@ -3,6 +3,7 @@ package daleco.database;
 public class DalecoItem {
     private Integer id;
     private String description;
+    private String imageName;
     
     public Integer getId() {
     		return this.id;
@@ -16,8 +17,13 @@ public class DalecoItem {
     public void setDescription(String description) {
     		this.description = description;
     }
-    public String toString() {
-    		return "id: " + this.id.toString() + " : description: " + this.description;
+    public String getImageName() {
+    		return this.imageName;
     }
-
+    public void setImageName(String imageName) {
+    		this.imageName = imageName;
+    }
+    public String toString() {
+    		return "id: " + this.id.toString() + "\n description: " + this.description + "\n" + "image name: " + this.imageName;
+    }
 }

@@ -57,7 +57,7 @@ public class DaleCoDatabase {
 			
 			System.out.println("Creating table: Products");
 			statement.close();
-			statement = connection.prepareStatement("CREATE TABLE inventory.products (product_id int not NULL primary key, description CHAR (200));");
+			statement = connection.prepareStatement("CREATE TABLE inventory.products (product_id int not NULL primary key, description CHAR (200), image_name CHAR(200));");
 			statement.execute();
 			statement.close();
 			
@@ -70,7 +70,7 @@ public class DaleCoDatabase {
 	            Statement batchStatment = connection.createStatement();
 	            while((line = bufferedReader.readLine()) != null) {
 	                String[] d = line.split(",");
-	                String sql = "INSERT INTO inventory.products VALUES('" + d[0] + "','" + d[1] + "')";
+	                String sql = "INSERT INTO inventory.products VALUES('" + d[0] + "','" + d[1] + "','" + d[2] + "')";
 	                System.out.println("Adding: " + sql);
 	                batchStatment.addBatch(sql);
 	            } 
@@ -95,7 +95,6 @@ public class DaleCoDatabase {
                 statement.close();
             }
 		}
-		
 	}
 	
 	public boolean dbExsits(){
@@ -104,14 +103,12 @@ public class DaleCoDatabase {
 	        ResultSet resultSet = connection.getMetaData().getCatalogs();
 
 	        while (resultSet.next()) {
-
 	          String databaseName = resultSet.getString(1);
 	            if(databaseName.equals("inventory")){
 	                return true;
 	            }
 	        }
 	        resultSet.close();
-
 	    }
 	    catch(Exception e){
 	        e.printStackTrace();
@@ -128,5 +125,4 @@ public class DaleCoDatabase {
 			e.printStackTrace();
 		}
 	}
-	
 }

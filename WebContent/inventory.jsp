@@ -12,20 +12,21 @@
 <%@page import="java.util.List" %>
 
 <TABLE>
+<TR bgcolor="#D3D3D3"><TD>ID</TD><TD>Description</TD></TR>
 <%
 	Inventory inv = new Inventory();
  	List<DalecoItem> items = inv.getAllItems();
  	for(int i=0; i < items.size(); ++i ){
  		%>
- 		<tr">
+ 		<tr>
 
  		<td><%=items.get(i).getId() %></td>
  		<td><%=items.get(i).getDescription() %></td>
+ 		<td><img src="images/<%=items.get(i).getImageName() %>"  height="42" width="42" />
 
  		</tr>
-
- 		<% 
- 		}
+<%
+ 	}
 %>
 </TABLE>
 

@@ -31,13 +31,14 @@ public class Inventory {
 			Connection connection = db.getConnection();
 			connection.setCatalog("inventory");
 			
-			PreparedStatement statement = connection.prepareStatement("SELECT product_id, description from inventory.products;");
+			PreparedStatement statement = connection.prepareStatement("SELECT product_id, description, image_name from inventory.products;");
 			ResultSet rs = statement.executeQuery();
 			
 			while(rs.next()) {
 				DalecoItem i = new DalecoItem();
 				i.setDescription(rs.getString("description"));
 				i.setId(rs.getInt("product_id"));
+				i.setImageName(rs.getString("image_name"));
 				items.add(i);
 			}
 			
