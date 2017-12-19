@@ -12,7 +12,7 @@ import java.io.*;
 
 public class DaleCoDatabase {
 	private Connection connection = null;
-
+	private String constring = "";
 	public Connection getConnection() {
 		return this.connection;
 	}
@@ -29,9 +29,11 @@ public class DaleCoDatabase {
 			System.out.println("Host: " + dbconfig.GetHost());
 			
 			System.out.println("Initializing database driver ...");
-			Class.forName("com.mysql.jdbc.Driver");
+
 			System.out.println("Connecting to Database");
-			String constring = "jdbc:mysql://" + dbconfig.GetHost() + "/?user=" + dbconfig.GetUser() + "&password=" + dbconfig.GetPassword();
+			constring = "jdbc:mysql://" + dbconfig.GetHost() + "/?user=" + dbconfig.GetUser() + "&password=" + dbconfig.GetPassword();
+			Class.forName("com.mysql.jdbc.Driver");
+			
 			System.out.println("Connection String:" + constring);
 			connection = DriverManager.getConnection(constring);
             if(connection != null) {
@@ -42,12 +44,23 @@ public class DaleCoDatabase {
             }
             
 		} catch (Exception e) {
-			throw(e);
+			//throw(e);
+			connection = null;
 		}
 	}
 	
 	public void create() throws Exception {
 		PreparedStatement statement = null;
+		while(connection == null) {
+			try {
+				connection = DriverManager.getConnection(constring);
+			}
+			catch (Exception e) {
+				System.out.println("Wating for Database");
+			}
+			Thread.sleep(1000);
+		}
+		
 		try {
 			System.out.println("Creating Database");
 			statement = this.connection

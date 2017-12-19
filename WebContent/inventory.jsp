@@ -10,13 +10,15 @@
 <%@page import="daleco.database.Inventory"%>
 <%@page import="daleco.database.DalecoItem"%>
 <%@page import="java.util.List" %>
-
+<img src="images/header.png" />
+<H1>Inventory List</H1>
 <TABLE>
-<TR bgcolor="#D3D3D3"><TD>ID</TD><TD>Description</TD></TR>
+<TR bgcolor="#ffffff "><TD>ID</TD><TD>Description</TD></TR>
 <%
 	Inventory inv = new Inventory();
  	List<DalecoItem> items = inv.getAllItems();
  	for(int i=0; i < items.size(); ++i ){
+ 		
  		%>
  		<tr>
 

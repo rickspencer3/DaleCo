@@ -40,6 +40,7 @@ public class Inventory {
 				i.setId(rs.getInt("product_id"));
 				i.setImageName(rs.getString("image_name"));
 				items.add(i);
+				System.out.println(i.getDescription());
 			}
 			
 			for(int i = 0 ; i < items.size(); ++i) {
