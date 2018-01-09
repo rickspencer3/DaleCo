@@ -105,21 +105,19 @@ public class DaleCoDatabase {
 	}
 	
 	public boolean productTableExists(){
-	    try {
-	        ResultSet resultSet = connection.getMetaData().getTables(null, null, "%", null);
+		ResultSet resultSet = null;
+		try {
+			resultSet = connection.getMetaData().getTables(null, null, "products", null);
+			return resultSet.next();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
 
-	        while (resultSet.next()) {
-	          String tableName = resultSet.getString(3);
-	            if(tableName.equals("products")){
-	                return true;
-	            }
-	        }
-	        resultSet.close();
-	    } catch(Exception e) {
-	        e.printStackTrace();
-	    }
-
-	    return false;
+		return false;
 	}
 	
 	public void close() {
