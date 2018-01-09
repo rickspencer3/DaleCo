@@ -113,7 +113,11 @@ public class DaleCoDatabase {
 			e.printStackTrace();
 		} finally {
 			if (resultSet != null) {
-				resultSet.close();
+				try {
+					resultSet.close();
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
