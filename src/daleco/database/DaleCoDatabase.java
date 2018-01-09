@@ -27,11 +27,12 @@ public class DaleCoDatabase {
 			System.out.println("User: " + dbconfig.GetUser());
 			System.out.println("Password: " + dbconfig.GetPassword());
 			System.out.println("Host: " + dbconfig.GetHost());
-			
+			System.out.println("Database name: " + dbconfig.GetDatabaseName());
+
 			System.out.println("Initializing database driver ...");
 
 			System.out.println("Connecting to Database");
-			constring = "jdbc:mysql://" + dbconfig.GetHost() + "/?user=" + dbconfig.GetUser() + "&password=" + dbconfig.GetPassword();
+			constring = "jdbc:mysql://" + dbconfig.GetHost() + "/" + dbconfig.GetDatabaseName() + "?user=" + dbconfig.GetUser() + "&password=" + dbconfig.GetPassword();
 			Class.forName("com.mysql.jdbc.Driver");
 			
 			System.out.println("Connection String:" + constring);
@@ -62,15 +63,8 @@ public class DaleCoDatabase {
 		}
 		
 		try {
-			System.out.println("Creating Database");
-			statement = this.connection
-                    .prepareStatement("CREATE DATABASE inventory;");
-			statement.execute();
-			
-			
 			System.out.println("Creating table: Products");
-			statement.close();
-			statement = connection.prepareStatement("CREATE TABLE inventory.products (product_id int not NULL primary key, description CHAR (200), image_name CHAR(200));");
+			statement = connection.prepareStatement("CREATE TABLE products (product_id int not NULL primary key, description CHAR (200), image_name CHAR(200));");
 			statement.execute();
 			statement.close();
 			
@@ -83,7 +77,7 @@ public class DaleCoDatabase {
 	            Statement batchStatment = connection.createStatement();
 	            while((line = bufferedReader.readLine()) != null) {
 	                String[] d = line.split(",");
-	                String sql = "INSERT INTO inventory.products VALUES('" + d[0] + "','" + d[1] + "','" + d[2] + "')";
+	                String sql = "INSERT INTO products VALUES('" + d[0] + "','" + d[1] + "','" + d[2] + "')";
 	                System.out.println("Adding: " + sql);
 	                batchStatment.addBatch(sql);
 	            } 
@@ -110,20 +104,18 @@ public class DaleCoDatabase {
 		}
 	}
 	
-	public boolean dbExsits(){
-	    try{
-
-	        ResultSet resultSet = connection.getMetaData().getCatalogs();
+	public boolean productTableExists(){
+	    try {
+	        ResultSet resultSet = connection.getMetaData().getTables(null, null, "%", null);
 
 	        while (resultSet.next()) {
-	          String databaseName = resultSet.getString(1);
-	            if(databaseName.equals("inventory")){
+	          String tableName = resultSet.getString(3);
+	            if(tableName.equals("products")){
 	                return true;
 	            }
 	        }
 	        resultSet.close();
-	    }
-	    catch(Exception e){
+	    } catch(Exception e) {
 	        e.printStackTrace();
 	    }
 
