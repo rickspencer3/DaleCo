@@ -29,9 +29,8 @@ public class Inventory {
 		try {
 			DaleCoDatabase db = new DaleCoDatabase();
 			Connection connection = db.getConnection();
-			connection.setCatalog("inventory");
 			
-			PreparedStatement statement = connection.prepareStatement("SELECT product_id, description, image_name from inventory.products;");
+			PreparedStatement statement = connection.prepareStatement("SELECT product_id, description, image_name from products;");
 			ResultSet rs = statement.executeQuery();
 			
 			while(rs.next()) {

@@ -33,11 +33,11 @@ public class Initializer extends HttpServlet {
 			DaleCoDatabase db = new DaleCoDatabase();
 			
 			
-			if(db.dbExsits()) {
-				System.out.println("Daleco database exists, continuing with initialization.");
+			if(db.productTableExists()) {
+				System.out.println("Daleco product table exists, continuing with initialization.");
 			}
 			else {
-				System.out.println("Daleco database not found, creating ...");
+				System.out.println("Daleco product table not found, creating ...");
 				db.create();
 			}
 			
