@@ -26,8 +26,9 @@ public class DatabaseGetPropertyValues {
 			String password = prop.getProperty("password");
 			String host = prop.getProperty("host");
 			String databaseName = prop.getProperty("database");
+			String type = prop.getProperty("type");
  
-			dbconfig = new DatabaseConfig(user, password, host, databaseName);
+			dbconfig = new DatabaseConfig(user, password, host, databaseName, type);
 			
 		} catch (Exception e) {
 			System.out.println("Exception: " + e);

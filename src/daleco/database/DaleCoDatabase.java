@@ -20,32 +20,50 @@ public class DaleCoDatabase {
 	public DaleCoDatabase() throws Exception {
 		try {
 			DatabaseConfig dbconfig = null;
-
 			DatabaseGetPropertyValues dbpropvalues = new DatabaseGetPropertyValues();
 	
-			dbconfig =dbpropvalues.getPropValues();
+			dbconfig = dbpropvalues.getPropValues();
 			System.out.println("User: " + dbconfig.GetUser());
 			System.out.println("Password: " + dbconfig.GetPassword());
 			System.out.println("Host: " + dbconfig.GetHost());
-			System.out.println("Database name: " + dbconfig.GetDatabaseName());
+			System.out.println("Database name: " + dbconfig.GetName());
+			System.out.println("Database type: " + dbconfig.GetType());
 
 			System.out.println("Initializing database driver ...");
 
+			if (dbconfig.GetType().equals("mysql")) {
+				constring += "jdbc:mysql://";
+				try {
+					Class.forName("com.mysql.jdbc.Driver");
+				} catch (ClassNotFoundException e) {
+					System.err.println("MySQL JDBC driver not found");
+					throw e;
+				}
+			} else if (dbconfig.GetType().equals("postgres")) {
+				constring += "jdbc:postgresql://";
+				try {
+					Class.forName("org.postgresql.Driver");
+				} catch (ClassNotFoundException e) {
+					System.err.println("PostgreSQL JDBC driver not found");
+					throw e;
+				}
+			} else {
+				System.err.println("Unsupported database provided: " + dbconfig.GetType());
+				throw new Exception("Unsupported database provided: " + dbconfig.GetType());
+			}
+
 			System.out.println("Connecting to Database");
-			constring = "jdbc:mysql://" + dbconfig.GetHost() + "/" + dbconfig.GetDatabaseName() + "?user=" + dbconfig.GetUser() + "&password=" + dbconfig.GetPassword();
-			Class.forName("com.mysql.jdbc.Driver");
-			
+			constring += dbconfig.GetHost() + "/" + dbconfig.GetName() + "?user=" + dbconfig.GetUser() + "&password=" + dbconfig.GetPassword();
+
 			System.out.println("Connection String:" + constring);
 			connection = DriverManager.getConnection(constring);
-            if(connection != null) {
-            		System.out.println("Database Connected");
-            }
-            else {
-            		System.out.println("Database NOT Connected");
-            }
-            
+			if(connection != null) {
+				System.out.println("Database Connected");
+			}
+			else {
+				System.out.println("Database NOT Connected");
+			}
 		} catch (Exception e) {
-			//throw(e);
 			connection = null;
 		}
 	}
@@ -70,37 +88,36 @@ public class DaleCoDatabase {
 			
 			System.out.println("Loading data");
 			try {
-	            InputStream is = getClass().getClassLoader().getResourceAsStream("products.csv");
-	            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-	            String line = null;
-	            
-	            Statement batchStatment = connection.createStatement();
-	            while((line = bufferedReader.readLine()) != null) {
-	                String[] d = line.split(",");
-	                String sql = "INSERT INTO products VALUES('" + d[0] + "','" + d[1] + "','" + d[2] + "')";
-	                System.out.println("Adding: " + sql);
-	                batchStatment.addBatch(sql);
-	            } 
-	            
-	            bufferedReader.close(); //TODO: Move this to a finally block
-	            
-	            batchStatment.executeBatch();
-	            batchStatment.close();
-	            
+				InputStream is = getClass().getClassLoader().getResourceAsStream("products.csv");
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+				String line = null;
+
+				String insertSQL = "INSERT INTO products VALUES(?,?,?)";
+				PreparedStatement batchStatement = connection.prepareStatement(insertSQL);
+				while((line = bufferedReader.readLine()) != null) {
+					String[] d = line.split(",");
+					batchStatement.setInt(1, Integer.parseInt(d[0]));
+					batchStatement.setString(2, d[1]);
+					batchStatement.setString(3, d[2]);
+					batchStatement.addBatch();
+				}
+
+				bufferedReader.close(); //TODO: Move this to a finally block
+				batchStatement.executeBatch();
+				batchStatement.close();
 			} catch(FileNotFoundException e) {
 				System.out.println("Data file not found");
 				e.printStackTrace();
-			}catch(IOException e) {
-	            e.printStackTrace();
-	        }
-			
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			throw(e);
 		} 
 		finally {
 			if (statement != null) {
-                statement.close();
-            }
+				statement.close();
+			}
 		}
 	}
 	
